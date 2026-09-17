@@ -16,7 +16,10 @@ def connect_db():
 def question_1_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select DATE_TRUNC('month', e.enrollment_date), count(e.student_id)
+                        from enrollments as e
+                        GROUP BY DATE_TRUNC('month', e.enrollment_date)
+                        ORDER by DATE_TRUNC('month', e.enrollment_date)''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -27,7 +30,10 @@ def question_1_query():
 def question_2_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select date_part('year', e.enrollment_date) as "year"
+                        from enrollments as e
+                        ORDER by DATE_TRUNC('month', e.enrollment_date);
+                    ''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -38,7 +44,8 @@ def question_2_query():
 def question_3_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select Sum(s.age) as "SUM"
+                        from students as s;''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -49,7 +56,9 @@ def question_3_query():
 def question_4_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select Count(c.course_id) as "total_course"
+                        from courses as c;
+                    ''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -60,7 +69,12 @@ def question_4_query():
 def question_5_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select*
+                        from students as s
+                        WHERE s.age > (
+	                            Select AVG(s.age)
+	                            from students as s)
+                        ORDER BY s.student_id;''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -71,7 +85,12 @@ def question_5_query():
 def question_6_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select c.course_id, min(e.enrollment_date) as "first_enrollment"
+                        from courses as c
+                        JOIN enrollments as e
+                        ON e.course_id = c.course_id
+                        GROUP by c.course_id
+                        ORDER BY c.course_id;''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -83,7 +102,14 @@ def question_6_query():
 def question_7_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select c.course_name, Avg(s.age) as "avg_age"
+                        from courses as c
+                        JOIN enrollments as e
+                        ON e.course_id = c.course_id
+                        JOIN students as s
+                        ON s.student_id = e.student_id
+                        GROUP by c.course_id
+                        ORDER BY c.course_id;''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -94,7 +120,8 @@ def question_7_query():
 def question_8_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute('')
+    cursor.execute('''select Min(s.age) as "MIN"
+                        from students as s;''')
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -104,7 +131,14 @@ def question_8_query():
 def question_9_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute("""""")
+    cursor.execute("""select c.course_name, Count(s.student_id) as "student_count"
+                        from courses as c
+                        JOIN enrollments as e
+                        ON e.course_id = c.course_id
+                        JOIN students as s
+                        ON s.student_id = e.student_id
+                        GROUP by c.course_id
+                        ORDER BY c.course_id;""")
     data = cursor.fetchall()
     cursor.close()
     connection.close()
@@ -115,7 +149,12 @@ def question_9_query():
 def question_10_query():
     connection = connect_db()
     cursor = connection.cursor()
-    cursor.execute("""""")
+    cursor.execute("""select c.course_name
+                        from courses as c
+                        JOIN enrollments as e
+                        ON e.course_id = c.course_id
+                        GROUP by c.course_name
+                        ORDER BY c.course_name;""")
     data = cursor.fetchall()
     cursor.close()
     connection.close()
